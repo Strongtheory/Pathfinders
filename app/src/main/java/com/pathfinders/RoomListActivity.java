@@ -21,9 +21,7 @@ public class RoomListActivity extends ListActivity {
 
     // List of Building Names
     static final String[] ROOMS = new String[] {
-        "1",
-            "2",
-            "3"
+        "1", "2", "3"
     };
 
 
