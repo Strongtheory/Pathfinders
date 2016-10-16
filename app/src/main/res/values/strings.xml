@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Pathfinders</string>
+
+    <!-- Buildings -->
+    <string name="buildings">List of Buildings</string>
+
+    <!-- onClick -->
+    <string name="transition">goToRooms</string>
 </resources>
