@@ -7,5 +7,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Name"
-        android:textSize="26sp"/>
+        android:textSize="26sp"
+        android:padding="4dp"/>
 </LinearLayout>
