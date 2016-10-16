@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,12 +176,13 @@ public class BuildingListActivity extends ListActivity
         startActivity(intent);
     }
     private class BuildingArrayAdapter extends ArrayAdapter<String> {
-        public BuildingArrayAdapter(Context context, String[] buildings) {
+        BuildingArrayAdapter(Context context, String[] buildings) {
             super(context, 0, buildings);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             String buildingName = getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_building, parent, false);
