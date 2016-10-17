@@ -7,20 +7,23 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-public class BuildingListActivity extends ListActivity
-            implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BuildingListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
     // Display Data
     SimpleCursorAdapter mAdapter;
@@ -150,8 +153,15 @@ public class BuildingListActivity extends ListActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_building_list);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         final BuildingArrayAdapter mAdapter = new BuildingArrayAdapter(this, BUILDINGS);
-        setListAdapter(mAdapter);
+        ListView mlistView = (ListView) findViewById(R.id.building_list);
+        mlistView.setAdapter(mAdapter);
+        mlistView.setOnItemClickListener(this);
         EditText searchText = (EditText) findViewById(R.id.building_search_bar);
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -171,29 +181,16 @@ public class BuildingListActivity extends ListActivity
         });
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        TextView textView = (TextView) v.findViewById(R.id.bldgName);
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        TextView textView = (TextView) view.findViewById(R.id.bldgName);
         Log.d(TAG, "Clicked: " + textView.getText());
 
         Intent intent = new Intent(this, RoomListActivity.class);
         startActivity(intent);
     }
+
     private class BuildingArrayAdapter extends ArrayAdapter<String> {
         public BuildingArrayAdapter(Context context, String[] buildings) {
             super(context, 0, buildings);

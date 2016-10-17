@@ -12,11 +12,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class RoomListActivity extends ListActivity {
+public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
     // Display Data
     RoomArrayAdapter mAdapter;
@@ -32,8 +35,16 @@ public class RoomListActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_list);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
         final RoomArrayAdapter mAdapter = new RoomArrayAdapter(this, ROOMS);
-        setListAdapter(mAdapter);
+        ListView mlistView = (ListView) findViewById(R.id.room_list);
+        mlistView.setAdapter(mAdapter);
+        mlistView.setOnItemClickListener(this);
         EditText searchText = (EditText) findViewById(R.id.room_search_bar);
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -53,6 +64,12 @@ public class RoomListActivity extends ListActivity {
         });
 
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
     private class RoomArrayAdapter extends ArrayAdapter<String> {
         public RoomArrayAdapter(Context context, String[] buildings) {
             super(context, 0, buildings);
