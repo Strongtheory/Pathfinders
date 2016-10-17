@@ -3,7 +3,6 @@ package com.pathfinders;
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +38,7 @@ public class RoomListActivity extends ListActivity {
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                
+
             }
 
             @Override
@@ -55,13 +54,12 @@ public class RoomListActivity extends ListActivity {
 
     }
     private class RoomArrayAdapter extends ArrayAdapter<String> {
-        RoomArrayAdapter(Context context, String[] buildings) {
+        public RoomArrayAdapter(Context context, String[] buildings) {
             super(context, 0, buildings);
         }
 
-        @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent) {
             String buildingName = getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_room, parent, false);
