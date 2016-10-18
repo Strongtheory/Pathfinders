@@ -1,4 +1,4 @@
-package com.pathfinders;
+package com.pathfinder;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

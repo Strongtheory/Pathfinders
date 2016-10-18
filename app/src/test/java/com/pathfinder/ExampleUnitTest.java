@@ -1,4 +1,4 @@
-package com.pathfinders;
+package com.pathfinder;
 
 import org.junit.Test;
 
