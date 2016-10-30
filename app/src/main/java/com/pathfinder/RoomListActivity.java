@@ -37,6 +37,7 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
     ListView mlistView;
 
     long buildingId;
+    JSONArray jsonArray;
 
 
     @Override
@@ -66,38 +67,39 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         if (netInfo != null && netInfo.isConnected()) {
             JSONTask task = new com.pathfinder.JSONTask() {
               @Override
-                protected void onPostExecute(JSONArray array) {
-                  final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), array);
-                  mlistView.setAdapter(mAdapter);
-                  EditText searchText = (EditText) findViewById(R.id.room_search_bar);
-                  searchText.addTextChangedListener(new TextWatcher() {
-                      @Override
-                      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                      }
-
-                      @Override
-                      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                          mAdapter.getFilter().filter(charSequence);
-                      }
-
-                      @Override
-                      public void afterTextChanged(Editable editable) {
-
-                      }
-                  });
-
+              protected void onPostExecute(JSONArray array) {
+                  jsonArray = array;
+                  onReceivedJSONArray();
               }
             };
 
-            task.execute("https://roomfinders.herokuapp.com/buildings/" + buildingId);
+            task.execute("https://roomfinders.herokuapp.com/buildings/" + buildingId + "/rooms");
         } else {
             Log.e(TAG, "Not connected to network");
         }
 
         mlistView.setOnItemClickListener(this);
+    }
+    private void onReceivedJSONArray() {
+        final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), jsonArray, "roomNumber");
+        mlistView.setAdapter(mAdapter);
+        EditText searchText = (EditText) findViewById(R.id.room_search_bar);
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @Override

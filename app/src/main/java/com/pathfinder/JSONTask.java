@@ -62,7 +62,7 @@ public class JSONTask extends AsyncTask<String, Void, JSONArray> {
             }
         }
 
-
+        Log.d(TAG, "Length: " + arr.length());
         return arr;
     }
 

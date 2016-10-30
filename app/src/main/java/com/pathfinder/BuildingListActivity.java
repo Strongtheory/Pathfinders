@@ -38,6 +38,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
     private static final String TAG = "BuildingListActivity";
     ListView mlistView;
+    JSONArray jsonArray;
 
 
     @Override
@@ -59,27 +60,8 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
             com.pathfinder.JSONTask task = new com.pathfinder.JSONTask() {
                 @Override
                 protected void onPostExecute(JSONArray array) {
-                    final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), array);
-                    Log.d(TAG, "array.length(): " + array.length());
-                    mlistView.setAdapter(mAdapter);
-                    EditText searchText = (EditText) findViewById(R.id.building_search_bar);
-                    searchText.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            mAdapter.getFilter().filter(charSequence);
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-
-                        }
-                    });
-
+                    jsonArray = array;
+                    onReceivedJSONArray();
                 }
             };
             task.execute("https://roomfinders.herokuapp.com/buildings");
@@ -92,16 +74,43 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         mlistView.setOnItemClickListener(this);
 
     }
+    private void onReceivedJSONArray() {
+        final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), jsonArray, "name");
+        mlistView.setAdapter(mAdapter);
+        EditText searchText = (EditText) findViewById(R.id.building_search_bar);
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
 
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int postion, long id) {
-        TextView textView = (TextView) view.findViewById(R.id.bldgName);
+        TextView textView = (TextView) view.findViewById(R.id.itemName);
         Log.d(TAG, "Clicked: " + textView.getText());
+        if (jsonArray != null) {
+            Intent intent = new Intent(this, RoomListActivity.class);
+            try {
+                intent.putExtra("buildingId", jsonArray.getJSONObject(postion).getLong("id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(intent);
+        }
 
-        Intent intent = new Intent(this, RoomListActivity.class);
-        intent.putExtra("buildingId", id);
-        startActivity(intent);
     }
     private class JSONTask extends AsyncTask<String, Void, JSONArray> {
         private final String TAG = "JSONTask";
