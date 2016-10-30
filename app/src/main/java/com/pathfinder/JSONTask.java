@@ -15,7 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by connor on 10/30/16.
+ * Asynchronous task that gets JSON data and returns it as a JSONArray
+ * Connor Reeder
  */
 
 public class JSONTask extends AsyncTask<String, Void, JSONArray> {

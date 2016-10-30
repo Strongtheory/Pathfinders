@@ -13,7 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by connor on 10/30/16.
+ * Adapter for a JSONArray
+ * Connor Reeder
  */
 
 public class JSONArrayAdapter extends ArrayAdapter {
