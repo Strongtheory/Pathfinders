@@ -18,14 +18,15 @@ import java.net.URL;
  * Created by connor on 10/30/16.
  */
 
-public class JSONTask extends AsyncTask<Void, Void, JSONArray> {
+public class JSONTask extends AsyncTask<String, Void, JSONArray> {
     private final String TAG = "JSONTask";
+
     @Override
-    protected JSONArray doInBackground(Void... voids) {
+    protected JSONArray doInBackground(String... urls) {
         InputStream is = null;
         JSONArray arr;
         try {
-            URL url = new URL("https://roomfinders.herokuapp.com/buildings");
+            URL url = new URL(urls[0]);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(10000);
             connection.setRequestMethod("GET");
@@ -33,7 +34,7 @@ public class JSONTask extends AsyncTask<Void, Void, JSONArray> {
 
             connection.connect();
             int response = connection.getResponseCode();
-            Log.d(TAG, "GET Request Code: " + response);
+            Log.d(TAG, "GET RC for : " + url.toString() + " is " + response);
             is = new BufferedInputStream(connection.getInputStream());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
