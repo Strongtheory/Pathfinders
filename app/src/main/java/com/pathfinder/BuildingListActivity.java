@@ -2,7 +2,10 @@ package com.pathfinder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.net.ConnectivityManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -18,6 +21,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+
+import java.util.concurrent.ExecutionException;
 
 public class BuildingListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
@@ -153,6 +160,24 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         setSupportActionBar(myToolbar);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        JSONTask task;
+        if (netInfo != null && netInfo.isConnected()) {
+            task = (JSONTask) new JSONTask().execute();
+            JSONArray arr;
+            try {
+                arr = task.get();
+                Log.d(TAG, "Length: " + arr.get(0).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.e(TAG, "Not connected to network");
+        }
+
+
 
         final BuildingArrayAdapter mAdapter = new BuildingArrayAdapter(this, BUILDINGS);
         ListView mlistView = (ListView) findViewById(R.id.building_list);
