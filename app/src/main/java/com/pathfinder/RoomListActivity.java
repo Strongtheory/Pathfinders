@@ -14,8 +14,12 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * View which displays rooms for a building
@@ -26,9 +30,9 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
 
     private static final String TAG = "BuildingListActivity";
     ListView mlistView;
-
     long buildingId;
-    JSONArray jsonArray;
+    List<Room> roomList;
+
 
 
     @Override
@@ -59,7 +63,14 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
             JSONTask task = new com.pathfinder.JSONTask() {
               @Override
               protected void onPostExecute(JSONArray array) {
-                  jsonArray = array;
+                  roomList = new ArrayList<Room>();
+                  try {
+                      for (int i = 0; i < array.length(); i++) {
+                          roomList.add(new Room(array.getJSONObject(i)));
+                      }
+                  } catch (Exception ex) {
+                      ex.printStackTrace();
+                  }
                   onReceivedJSONArray();
               }
             };
@@ -72,7 +83,8 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         mlistView.setOnItemClickListener(this);
     }
     private void onReceivedJSONArray() {
-        final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), jsonArray, "roomNumber");
+        //final FilterableItemAdapter mAdapter = new FilterableItemAdapter(getBaseContext(), jsonArray, "roomNumber");
+        final FilterableItemAdapter<Room> mAdapter = new FilterableItemAdapter<Room>(this, roomList);
         mlistView.setAdapter(mAdapter);
         EditText searchText = (EditText) findViewById(R.id.room_search_bar);
         searchText.addTextChangedListener(new TextWatcher() {
@@ -94,8 +106,11 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        TextView textView = (TextView) view.findViewById(R.id.itemName);
+        Log.d(TAG, "Clicked: " + textView.getText());
+        if (roomList != null) {
+        }
     }
 
 }

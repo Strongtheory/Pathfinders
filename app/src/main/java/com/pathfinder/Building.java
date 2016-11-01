@@ -1,15 +1,18 @@
 package com.pathfinder;
 
+import org.json.JSONObject;
+
 /**
- * Created by connor on 10/30/16.
+ * Class representing a building on GT Campus
+ * Connor Reeder
  */
 
-public class Building {
+public class Building implements FilterableItem {
     private double latitude;
     private double longitude;
     private String name;
     private String address;
-    private int id;
+    private long id;
 
     public Building(String name, String address, double latitude, double longitude, int id) {
         this.name = name;
@@ -17,6 +20,18 @@ public class Building {
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
+    }
+    public Building (JSONObject jsonObject) {
+        try {
+            this.name = jsonObject.getString("name");
+            this.address = jsonObject.getString("address");
+            this.latitude = jsonObject.getDouble("latitude");
+            this.longitude = jsonObject.getDouble("longitude");
+            this.id = jsonObject.getInt("id");
+        } catch (Exception ex) {
+
+        }
+
     }
 
     public double getLatitude() {
@@ -51,11 +66,17 @@ public class Building {
         this.address = address;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    @Override
+    public String valueToFiler() {
+        return name;
     }
 }

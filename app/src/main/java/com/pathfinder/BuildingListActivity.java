@@ -18,7 +18,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * View which displays all buildings on GT Campus
@@ -29,7 +31,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
     private static final String TAG = "BuildingListActivity";
     ListView mlistView;
-    JSONArray jsonArray;
+    List<Building> buildingList;
 
 
     @Override
@@ -41,7 +43,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        //final BuildingArrayAdapter mAdapter = new BuildingArrayAdapter(this, BUILDINGS);
+
 
         mlistView = (ListView) findViewById(R.id.building_list);
 
@@ -51,7 +53,14 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
             com.pathfinder.JSONTask task = new com.pathfinder.JSONTask() {
                 @Override
                 protected void onPostExecute(JSONArray array) {
-                    jsonArray = array;
+                    buildingList = new ArrayList<Building>();
+                    try {
+                        for (int i = 0; i < array.length(); i++) {
+                            buildingList.add(new Building(array.getJSONObject(i)));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     onReceivedJSONArray();
                 }
             };
@@ -66,7 +75,8 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
     }
     private void onReceivedJSONArray() {
-        final JSONArrayAdapter mAdapter = new JSONArrayAdapter(getBaseContext(), jsonArray, "name");
+        //final BuildingArrayAdapter mAdapter = new BuildingArrayAdapter(getBaseContext(), buildingList);
+        final FilterableItemAdapter<Building> mAdapter = new FilterableItemAdapter<Building>(this, buildingList);
         mlistView.setAdapter(mAdapter);
         EditText searchText = (EditText) findViewById(R.id.building_search_bar);
         searchText.addTextChangedListener(new TextWatcher() {
@@ -89,19 +99,14 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int postion, long id) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         TextView textView = (TextView) view.findViewById(R.id.itemName);
         Log.d(TAG, "Clicked: " + textView.getText());
-        if (jsonArray != null) {
+        if (buildingList != null) {
             Intent intent = new Intent(this, RoomListActivity.class);
-            try {
-                intent.putExtra("buildingId", jsonArray.getJSONObject(postion).getLong("id"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            intent.putExtra("buildingId", buildingList.get(position).getId());
             startActivity(intent);
         }
-
     }
 }
 
