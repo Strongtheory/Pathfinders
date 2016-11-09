@@ -1,6 +1,8 @@
 package com.pathfinder;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,11 +15,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +31,12 @@ import java.util.List;
  * Connor Reeder
  */
 
-public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
+public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener, BigBuildingImageTask.Listener{
 
     private static final String TAG = "BuildingListActivity";
     ListView mlistView;
-    long buildingId;
     List<Room> roomList;
-
+    Building building;
 
 
     @Override
@@ -47,11 +51,17 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            buildingId = extras.getLong("buildingId");
+            building = new Building(extras.getString("buildingName"),
+                    extras.getString("address"),
+                    extras.getDouble("latitude"),
+                    extras.getDouble("longitude"),
+                    extras.getLong("buildingId"),
+                    extras.getString("url"));
         } else {
-            buildingId = 0;
         }
 
+        BigBuildingImageTask imageTask = (BigBuildingImageTask) new BigBuildingImageTask(this, this).execute(building);
+        setBuildingInfo();
         //final RoomArrayAdapter mAdapter = new RoomArrayAdapter(this, ROOMS);
 
 
@@ -75,7 +85,7 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
               }
             };
 
-            task.execute("https://roomfinders.herokuapp.com/buildings/" + buildingId + "/rooms");
+            task.execute("https://roomfinders.herokuapp.com/buildings/" + building.getId() + "/rooms");
         } else {
             Log.e(TAG, "Not connected to network");
         }
@@ -112,5 +122,20 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         if (roomList != null) {
         }
     }
+    public void setBuildingInfo() {
+        TextView buildingNameView = (TextView)findViewById(R.id.buildingName);
+        ImageView buildingImageView = (ImageView)findViewById(R.id.buildingImage);
+        buildingNameView.setText(building.getName());
+        String fileName = building.getId() + "-big.jpg";
+        File imageFile = new File(getCacheDir(), fileName);
+        if (imageFile.exists()) {
+            Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            buildingImageView.setImageBitmap(bmp);
+        }
+    }
 
+    @Override
+    public void onImageDownloaded() {
+        setBuildingInfo();
+    }
 }

@@ -41,6 +41,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
     ListView mlistView;
     List<Building> buildingList;
     FilterableItemAdapter<Building> mAdapter;
+    private RoomListActivity child;
 
 
     @Override
@@ -143,14 +144,21 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         Log.d(TAG, "Clicked: " + bldgNameView.getText());
         if (buildingList != null) {
             Intent intent = new Intent(this, RoomListActivity.class);
-            intent.putExtra("buildingId", buildingList.get(position).getId());
+            Building bldg = buildingList.get(position);
+            intent.putExtra("buildingId", bldg.getId());
+            intent.putExtra("buildingName", bldg.getName());
+            intent.putExtra("latitude", bldg.getLatitude());
+            intent.putExtra("longitude", bldg.getLongitude());
+            intent.putExtra("address", bldg.getAddress());
+            intent.putExtra("url", bldg.getUrl());
             startActivity(intent);
         }
     }
 
     @Override
-    public void onImageDownloaded() {
+    public void onIconsDownloaded() {
         mAdapter.notifyDataSetChanged();
     }
+
 }
 

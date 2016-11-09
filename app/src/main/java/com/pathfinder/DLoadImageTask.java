@@ -56,9 +56,9 @@ public class DLoadImageTask extends AsyncTask<List<Building>, Void, Void> {
         //if (result != null)
          //   imageView.setImageBitmap(result);
         Log.d(TAG, "Downloaded all images");
-        listener.onImageDownloaded();
+        listener.onIconsDownloaded();
     }
     public interface Listener {
-        void onImageDownloaded();
+        void onIconsDownloaded();
     }
 }
