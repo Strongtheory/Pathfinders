@@ -1,6 +1,7 @@
 package com.roomfinder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener, BigBuildingImageTask.Listener{
 
-    private static final String TAG = "BuildingListActivity";
+    private static final String TAG = "RoomListActivity";
     ListView mlistView;
     List<Room> roomList;
     Building building;
@@ -119,6 +120,8 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         TextView textView = (TextView) view.findViewById(R.id.itemName);
         Log.d(TAG, "Clicked: " + textView.getText());
         if (roomList != null) {
+            Intent intent = new Intent(this, NavigationActivity.class);
+            startActivity(intent);
         }
     }
     public void setBuildingInfo() {

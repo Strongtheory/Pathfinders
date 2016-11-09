@@ -7,4 +7,5 @@
     <!-- onClick -->
     <string name="transition">goToRooms</string>
     <string name="title_activity_room_list">RoomListActivity</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
 </resources>
