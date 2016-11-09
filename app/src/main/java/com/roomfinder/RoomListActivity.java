@@ -1,4 +1,4 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
-            JSONTask task = new com.pathfinder.JSONTask() {
+            JSONTask task = new com.roomfinder.JSONTask() {
               @Override
               protected void onPostExecute(JSONArray array) {
                   roomList = new ArrayList<Room>();

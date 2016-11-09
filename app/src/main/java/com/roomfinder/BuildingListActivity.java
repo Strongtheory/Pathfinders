@@ -1,10 +1,9 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import org.json.JSONArray;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +60,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
             //get jsonObjectArray and then parse it into an array of Building Objects
-            com.pathfinder.JSONTask task = new com.pathfinder.JSONTask() {
+            com.roomfinder.JSONTask task = new com.roomfinder.JSONTask() {
                 @Override
                 protected void onPostExecute(JSONArray array) {
                     buildingList = new ArrayList<Building>();

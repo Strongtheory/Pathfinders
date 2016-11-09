@@ -1,4 +1,4 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import android.os.AsyncTask;
 import android.util.Log;

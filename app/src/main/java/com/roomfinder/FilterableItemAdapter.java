@@ -1,4 +1,4 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import android.content.Context;
 import android.view.LayoutInflater;

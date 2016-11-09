@@ -1,15 +1,13 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by connor on 11/8/16.

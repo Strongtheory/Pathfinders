@@ -1,4 +1,4 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import org.junit.Test;
 

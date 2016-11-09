@@ -1,9 +1,6 @@
-package com.pathfinder;
+package com.roomfinder;
 
 import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Class representing a building on GT Campus
