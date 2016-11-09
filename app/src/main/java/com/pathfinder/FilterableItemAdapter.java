@@ -46,9 +46,9 @@ public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String name = filteredList.get(position).valueToFiler();
+        String name = getItem(position).valueToFiler();
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_filterable_list, parent, false);
         }
         TextView bldgName = (TextView) convertView.findViewById(R.id.itemName);
         bldgName.setText(name);
@@ -60,6 +60,9 @@ public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter
         if (filter == null)
             filter = new ItemFilter();
         return filter;
+    }
+    protected Context getContext() {
+        return context;
     }
     private class ItemFilter extends Filter {
 

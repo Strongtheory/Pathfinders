@@ -2,6 +2,9 @@ package com.pathfinder;
 
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Class representing a building on GT Campus
  * Connor Reeder
@@ -13,13 +16,15 @@ public class Building implements FilterableItem {
     private String name;
     private String address;
     private long id;
+    private String url;
 
-    public Building(String name, String address, double latitude, double longitude, int id) {
+    public Building(String name, String address, double latitude, double longitude, long id, String url) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
+        this.url = url;
     }
     public Building (JSONObject jsonObject) {
         try {
@@ -28,8 +33,9 @@ public class Building implements FilterableItem {
             this.latitude = jsonObject.getDouble("latitude");
             this.longitude = jsonObject.getDouble("longitude");
             this.id = jsonObject.getInt("id");
+            this.url = jsonObject.getString("imageURL");
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
     }
@@ -70,10 +76,17 @@ public class Building implements FilterableItem {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     @Override
     public String valueToFiler() {
