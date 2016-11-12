@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 
 import java.io.File;
@@ -31,7 +33,7 @@ import java.util.List;
  * Connor Reeder
  */
 
-public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener, BigBuildingImageTask.Listener{
+public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
     private static final String TAG = "RoomListActivity";
     ListView mlistView;
@@ -60,13 +62,23 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         } else {
         }
 
-        BigBuildingImageTask imageTask = (BigBuildingImageTask) new BigBuildingImageTask(this, this).execute(building);
-        setBuildingInfo();
-        //final RoomArrayAdapter mAdapter = new RoomArrayAdapter(this, ROOMS);
+        TextView buildingNameView = (TextView)findViewById(R.id.buildingName);
+        ImageView buildingImageView = (ImageView)findViewById(R.id.buildingImage);
+
+        //Set name of building
+        buildingNameView.setText(building.getName());
+
+        //Load large image of building
+        String url = building.getUrl();
+        int index = url.lastIndexOf('/', url.lastIndexOf('/') - 1);
+        url = url.substring(0, index) + "/h_400" + url.substring(index, url.length());
+        Picasso.with(this).load(url).into(buildingImageView);
 
 
         mlistView = (ListView) findViewById(R.id.room_list);
 
+        //Upon receiving the JSON data containing the list of rooms
+        //roomList is populated
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
@@ -92,8 +104,9 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
 
         mlistView.setOnItemClickListener(this);
     }
+
+    //sets up the adapter for the ListView upon having roomList populated with JSON data
     private void onReceivedJSONArray() {
-        //final FilterableItemAdapter mAdapter = new FilterableItemAdapter(getBaseContext(), jsonArray, "roomNumber");
         final FilterableItemAdapter<Room> mAdapter = new FilterableItemAdapter<Room>(this, roomList);
         mlistView.setAdapter(mAdapter);
         EditText searchText = (EditText) findViewById(R.id.room_search_bar);
@@ -125,19 +138,7 @@ public class RoomListActivity extends AppCompatActivity implements ListView.OnIt
         }
     }
     public void setBuildingInfo() {
-        TextView buildingNameView = (TextView)findViewById(R.id.buildingName);
-        ImageView buildingImageView = (ImageView)findViewById(R.id.buildingImage);
-        buildingNameView.setText(building.getName());
-        String fileName = building.getId() + "-big.jpg";
-        File imageFile = new File(getCacheDir(), fileName);
-        if (imageFile.exists()) {
-            Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            buildingImageView.setImageBitmap(bmp);
-        }
+
     }
 
-    @Override
-    public void onImageDownloaded() {
-        setBuildingInfo();
-    }
 }

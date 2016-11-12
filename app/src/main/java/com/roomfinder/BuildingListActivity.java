@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 
 import java.io.File;
@@ -33,7 +35,7 @@ import java.util.List;
  * Connor Reeder
  */
 
-public class BuildingListActivity extends AppCompatActivity implements ListView.OnItemClickListener, DLoadImageTask.Listener{
+public class BuildingListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
     private static final String TAG = "BuildingListActivity";
     ListView mlistView;
@@ -87,7 +89,6 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
     private void onReceivedJSONArray() {
         //final BuildingArrayAdapter mAdapter = new BuildingArrayAdapter(getBaseContext(), buildingList);
-        new DLoadImageTask(getBaseContext(), this).execute(buildingList);
         mAdapter = new FilterableItemAdapter<Building>(this, buildingList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -100,14 +101,10 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
                 ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
                 TextView bldgName = (TextView) convertView.findViewById(R.id.buildingName);
 
-                File imageFile = new File(getCacheDir(), filename);
-                if (imageFile.exists()) {
-                    Log.d(TAG, "name: " + name + ", " + "imageFile: " + imageFile);
-                    //BitmapFactory.Options options = new BitmapFactory.Options();
-                    Bitmap bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                    imageView.setImageBitmap(bmp);
-                }
-
+                String url = getItem(position).getUrl();
+                int index = url.lastIndexOf('/', url.lastIndexOf('/') - 1);
+                url = url.substring(0, index) + "/h_100" + url.substring(index, url.length());
+                Picasso.with(getContext()).load(url).into(imageView);
 
 
                 bldgName.setText(name);
@@ -152,11 +149,5 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
             startActivity(intent);
         }
     }
-
-    @Override
-    public void onIconsDownloaded() {
-        mAdapter.notifyDataSetChanged();
-    }
-
 }
 
