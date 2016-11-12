@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RoomListActivity"
+            android:name=".BuildingActivity"
             android:label="@string/title_activity_room_list" />
         <activity
             android:name=".NavigationActivity"

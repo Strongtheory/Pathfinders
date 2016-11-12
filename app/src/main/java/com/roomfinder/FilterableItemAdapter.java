@@ -1,6 +1,7 @@
 package com.roomfinder;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 
 public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter implements Filterable{
-    private static final String TAG = "BaseAdapter";
+    private static final String TAG = "FilterableItemAdapter";
     private Context context;
     private List<T> origList;
     private List<T> filteredList;
@@ -70,8 +71,9 @@ public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             if (constraint == null || constraint.length() == 0) {
-                results.values = origList;
-                results.count = origList.size();
+                filteredList = new ArrayList<T>(origList);
+                results.values = filteredList;
+                results.count = filteredList.size();
             } else {
                 filteredList = new ArrayList<T>();
                 for (int i = 0; i < origList.size(); i++) {
@@ -90,7 +92,6 @@ public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             notifyDataSetChanged();
-
         }
     }
 }

@@ -2,8 +2,6 @@ package com.roomfinder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
     ListView mlistView;
     List<Building> buildingList;
     FilterableItemAdapter<Building> mAdapter;
-    private RoomListActivity child;
+    private BuildingActivity child;
 
 
     @Override
@@ -138,7 +135,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         TextView bldgNameView = (TextView) view.findViewById(R.id.buildingName);
         Log.d(TAG, "Clicked: " + bldgNameView.getText());
         if (buildingList != null) {
-            Intent intent = new Intent(this, RoomListActivity.class);
+            Intent intent = new Intent(this, BuildingActivity.class);
             Building bldg = buildingList.get(position);
             intent.putExtra("buildingId", bldg.getId());
             intent.putExtra("buildingName", bldg.getName());

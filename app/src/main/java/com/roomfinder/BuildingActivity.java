@@ -33,9 +33,9 @@ import java.util.List;
  * Connor Reeder
  */
 
-public class RoomListActivity extends AppCompatActivity implements ListView.OnItemClickListener{
+public class BuildingActivity extends AppCompatActivity implements ListView.OnItemClickListener{
 
-    private static final String TAG = "RoomListActivity";
+    private static final String TAG = "BuildingActivity";
     ListView mlistView;
     List<Room> roomList;
     Building building;
