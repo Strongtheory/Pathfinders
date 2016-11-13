@@ -19,13 +19,13 @@ import java.net.URL;
  * Connor Reeder
  */
 
-public class JSONTask extends AsyncTask<String, Void, JSONArray> {
+public class JSONTask extends AsyncTask<String, Void, String> {
     private final String TAG = "JSONTask";
 
     @Override
-    protected JSONArray doInBackground(String... urls) {
+    protected String doInBackground(String... urls) {
         InputStream is = null;
-        JSONArray arr;
+        String result;
         try {
             URL url = new URL(urls[0]);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -43,16 +43,11 @@ public class JSONTask extends AsyncTask<String, Void, JSONArray> {
             String recvd;
             while ((recvd = reader.readLine()) != null)
                 builder.append(recvd);
-            try {
-                arr = new JSONArray(builder.toString());
-            } catch (JSONException ex) {
-                arr = new JSONArray();
-
-            }
+            result = builder.toString();
 
         } catch (Exception e) {
             e.printStackTrace();
-            arr = new JSONArray();
+            result = "";
         } finally {
             if (is != null) {
                 try {
@@ -63,8 +58,7 @@ public class JSONTask extends AsyncTask<String, Void, JSONArray> {
             }
         }
 
-        Log.d(TAG, "Length: " + arr.length());
-        return arr;
+        return result;
     }
 
 }

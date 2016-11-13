@@ -1,6 +1,13 @@
 package com.roomfinder;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing a building on GT Campus
@@ -8,20 +15,23 @@ import org.json.JSONObject;
  */
 
 public class Building implements FilterableItem {
+    private static final String TAG = "Building";
     private double latitude;
     private double longitude;
     private String name;
     private String address;
     private long id;
     private String url;
+    private String[] entrances;
 
-    public Building(String name, String address, double latitude, double longitude, long id, String url) {
+    public Building(String name, String address, double latitude, double longitude, long id, String url, String[] entrances) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;
         this.url = url;
+        this.entrances = entrances;
     }
     public Building (JSONObject jsonObject) {
         try {
@@ -31,6 +41,17 @@ public class Building implements FilterableItem {
             this.longitude = jsonObject.getDouble("longitude");
             this.id = jsonObject.getInt("id");
             this.url = jsonObject.getString("imageURL");
+            try {
+                JSONArray arr = jsonObject.getJSONArray("entrances");
+                this.entrances = new String[arr.length()];
+                for (int i = 0; i < arr.length(); i++) {
+                    entrances[i] = arr.getJSONObject(i).getString("name");
+                }
+            } catch (JSONException ex) {
+                Log.d(TAG, "No entrances for building: " + name);
+                this.entrances = new String[0];
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -83,6 +104,14 @@ public class Building implements FilterableItem {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String[] getEntrances() {
+        return entrances;
+    }
+
+    public void setEntrances(String[] entrances) {
+        this.entrances = entrances;
     }
 
     @Override

@@ -61,9 +61,10 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
             //get jsonObjectArray and then parse it into an array of Building Objects
             com.roomfinder.JSONTask task = new com.roomfinder.JSONTask() {
                 @Override
-                protected void onPostExecute(JSONArray array) {
+                protected void onPostExecute(String result) {
                     buildingList = new ArrayList<Building>();
                     try {
+                        JSONArray array = new JSONArray(result);
                         for (int i = 0; i < array.length(); i++) {
                             buildingList.add(new Building(array.getJSONObject(i)));
                         }
@@ -135,13 +136,14 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
         Log.d(TAG, "Clicked: " + bldgNameView.getText());
         if (buildingList != null) {
             Intent intent = new Intent(this, BuildingActivity.class);
-            Building bldg = buildingList.get(position);
+            Building bldg = mAdapter.getItem(position);
             intent.putExtra("buildingId", bldg.getId());
             intent.putExtra("buildingName", bldg.getName());
             intent.putExtra("latitude", bldg.getLatitude());
             intent.putExtra("longitude", bldg.getLongitude());
             intent.putExtra("address", bldg.getAddress());
             intent.putExtra("url", bldg.getUrl());
+            intent.putExtra("entrances", bldg.getEntrances());
             startActivity(intent);
         }
     }

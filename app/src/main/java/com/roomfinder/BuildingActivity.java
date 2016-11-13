@@ -57,9 +57,11 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
                     extras.getDouble("latitude"),
                     extras.getDouble("longitude"),
                     extras.getLong("buildingId"),
-                    extras.getString("url"));
+                    extras.getString("url"),
+                    extras.getStringArray("entrances"));
         } else {
         }
+        Log.d(TAG, "Building: " + building.getName() + " -> "  + building.getEntrances().length + " entrances");
 
         TextView buildingNameView = (TextView)findViewById(R.id.buildingName);
         ImageView buildingImageView = (ImageView)findViewById(R.id.buildingImage);
@@ -84,9 +86,10 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         if (netInfo != null && netInfo.isConnected()) {
             JSONTask task = new com.roomfinder.JSONTask() {
               @Override
-              protected void onPostExecute(JSONArray array) {
+              protected void onPostExecute(String result) {
                   roomList = new ArrayList<Room>();
                   try {
+                      JSONArray array = new JSONArray(result);
                       for (int i = 0; i < array.length(); i++) {
                           roomList.add(new Room(array.getJSONObject(i)));
                       }
@@ -109,9 +112,9 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         navButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Log.d(TAG, "Nav button Clicked");
-                Log.d(TAG, "Building: " + building.getName() + " -> " + building.getAddress());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri uri = Uri.parse("geo:0,0?q=" + Uri.encode(building.getAddress()));
+                Log.d(TAG, "Building: " + building.getName() + " -> " + uri.toString());
                 intent.setData(uri);
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
@@ -148,7 +151,15 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         TextView textView = (TextView) view.findViewById(R.id.itemName);
         Log.d(TAG, "Clicked: " + textView.getText());
         if (roomList != null) {
-            Intent intent = new Intent(this, NavigationActivity.class);
+            Intent intent = new Intent(this, EntranceListActivity.class);
+            intent.putExtra("buildingId", building.getId());
+            intent.putExtra("buildingName", building.getName());
+            intent.putExtra("latitude", building.getLatitude());
+            intent.putExtra("longitude", building.getLongitude());
+            intent.putExtra("address", building.getAddress());
+            intent.putExtra("url", building.getUrl());
+            intent.putExtra("entrances", building.getEntrances());
+            intent.putExtra("room", textView.getText());
             startActivity(intent);
         }
     }

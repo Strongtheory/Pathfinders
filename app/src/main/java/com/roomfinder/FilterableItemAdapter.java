@@ -1,7 +1,6 @@
 package com.roomfinder;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,7 @@ public class FilterableItemAdapter<T extends FilterableItem> extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         String name = getItem(position).valueToFiler();
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_filterable_list, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_generic_list, parent, false);
         }
         TextView bldgName = (TextView) convertView.findViewById(R.id.itemName);
         bldgName.setText(name);
