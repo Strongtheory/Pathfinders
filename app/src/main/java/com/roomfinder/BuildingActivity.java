@@ -2,10 +2,9 @@ package com.roomfinder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,7 +24,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_room_list);
+        setContentView(R.layout.activity_building);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.room_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(R.string.app_name);
@@ -71,7 +70,8 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         //Load large image of building
         String url = building.getUrl();
         int index = url.lastIndexOf('/', url.lastIndexOf('/') - 1);
-        url = url.substring(0, index) + "/h_400" + url.substring(index, url.length());
+        url = url.substring(0, index) + "/w_500" + url.substring(index, url.length());
+
         Picasso.with(this).load(url).into(buildingImageView);
 
 
@@ -103,6 +103,21 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         }
 
         mlistView.setOnItemClickListener(this);
+
+
+        Button navButton = (Button) findViewById(R.id.navButton);
+        navButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Log.d(TAG, "Nav button Clicked");
+                Log.d(TAG, "Building: " + building.getName() + " -> " + building.getAddress());
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("geo:0,0?q=" + Uri.encode(building.getAddress()));
+                intent.setData(uri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     //sets up the adapter for the ListView upon having roomList populated with JSON data
@@ -136,9 +151,6 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
             Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
         }
-    }
-    public void setBuildingInfo() {
-
     }
 
 }

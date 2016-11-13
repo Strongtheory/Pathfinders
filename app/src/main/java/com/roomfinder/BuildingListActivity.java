@@ -90,7 +90,6 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 String name = getItem(position).getName();
-                String filename = getItem(position).getId() + ".jpg";
 
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_building_list, parent, false);
@@ -100,7 +99,7 @@ public class BuildingListActivity extends AppCompatActivity implements ListView.
 
                 String url = getItem(position).getUrl();
                 int index = url.lastIndexOf('/', url.lastIndexOf('/') - 1);
-                url = url.substring(0, index) + "/h_100" + url.substring(index, url.length());
+                url = url.substring(0, index) + "/w_150" + url.substring(index, url.length());
                 Picasso.with(getContext()).load(url).into(imageView);
 
 
