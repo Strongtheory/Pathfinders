@@ -72,6 +72,7 @@ public class Directions {
         String[] instructions = new String[steps.length];
         for (int i = 0; i < steps.length; i++) {
             String command = "";
+            int dist = (int) (steps[i].getDistance() / 3.28084);
             if (steps[i].getAction() == NavigationInstruction.Arrived) {
                 instructions[i] = "You have arrived!";
             }else {
@@ -85,7 +86,7 @@ public class Directions {
                     command = "Go upstairs in";
                 else if (steps[i].getAction() == NavigationInstruction.Downstairs)
                     command = "Go Downstairs in";
-                instructions[i] = command + " " + steps[i].getDistance() + " feet";
+                instructions[i] = command + " " + dist + " feet";
             }
         }
         return instructions;
