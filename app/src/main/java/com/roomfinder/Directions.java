@@ -6,9 +6,9 @@ package com.roomfinder;
  */
 
 public class Directions {
-    private String buildingEntrance;
-    private String destBuilding;
-    private String destRoom;
+    private Entrance buildingEntrance;
+    private Building destBuilding;
+    private Room destRoom;
     private double estTravelTime;
     private NavigationInstruction[] stepTypes;
     private double[] stepDistances;
@@ -18,10 +18,10 @@ public class Directions {
             "Turn Right",
             "Continue Straight",
             "Go Upstairs",
-            "Downstairs"
+            "Go Downstairs"
     };
 
-    public Directions(String buildingEntrance, String destBuilding, String destRoom, double estTravelTime, NavigationInstruction[] stepTypes, double[] stepDistances) {
+    public Directions(Entrance buildingEntrance, Building destBuilding, Room destRoom, double estTravelTime, NavigationInstruction[] stepTypes, double[] stepDistances) {
         this.buildingEntrance = buildingEntrance;
         this.destBuilding = destBuilding;
         this.destRoom = destRoom;
@@ -30,27 +30,27 @@ public class Directions {
         this.stepDistances = stepDistances;
     }
 
-    public String getBuildingEntrance() {
+    public Entrance getBuildingEntrance() {
         return buildingEntrance;
     }
 
-    public void setBuildingEntrance(String buildingEntrance) {
+    public void setBuildingEntrance(Entrance buildingEntrance) {
         this.buildingEntrance = buildingEntrance;
     }
 
-    public String getDestBuilding() {
+    public Building getDestBuilding() {
         return destBuilding;
     }
 
-    public void setDestBuilding(String destBuilding) {
+    public void setDestBuilding(Building destBuilding) {
         this.destBuilding = destBuilding;
     }
 
-    public String getDestRoom() {
+    public Room getDestRoom() {
         return destRoom;
     }
 
-    public void setDestRoom(String destRoom) {
+    public void setDestRoom(Room destRoom) {
         this.destRoom = destRoom;
     }
 

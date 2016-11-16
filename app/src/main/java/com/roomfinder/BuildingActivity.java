@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -38,6 +39,7 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
     ListView mlistView;
     List<Room> roomList;
     Building building;
+    FilterableItemAdapter<Room> mAdapter;
 
 
     @Override
@@ -51,6 +53,14 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Bundle extras = getIntent().getExtras();
+
+        //Java Garbage to individually cast Parcelable[] to Entrance[]
+        //because you cannot cast arrays
+        Parcelable[] entrancePs = extras.getParcelableArray("entrances");
+        Entrance[] entrances = new Entrance[entrancePs.length];
+        for (int i = 0; i < entrancePs.length; i++) {
+            entrances[i] = (Entrance) entrancePs[i];
+        }
         if (extras != null) {
             building = new Building(extras.getString("buildingName"),
                     extras.getString("address"),
@@ -58,7 +68,7 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
                     extras.getDouble("longitude"),
                     extras.getLong("buildingId"),
                     extras.getString("url"),
-                    extras.getStringArray("entrances"));
+                    entrances);
         } else {
         }
         Log.d(TAG, "Building: " + building.getName() + " -> "  + building.getEntrances().length + " entrances");
@@ -125,7 +135,7 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
 
     //sets up the adapter for the ListView upon having roomList populated with JSON data
     private void onReceivedJSONArray() {
-        final FilterableItemAdapter<Room> mAdapter = new FilterableItemAdapter<Room>(this, roomList);
+        mAdapter = new FilterableItemAdapter<Room>(this, roomList);
         mlistView.setAdapter(mAdapter);
         EditText searchText = (EditText) findViewById(R.id.room_search_bar);
         searchText.addTextChangedListener(new TextWatcher() {
@@ -159,7 +169,7 @@ public class BuildingActivity extends AppCompatActivity implements ListView.OnIt
             intent.putExtra("address", building.getAddress());
             intent.putExtra("url", building.getUrl());
             intent.putExtra("entrances", building.getEntrances());
-            intent.putExtra("room", textView.getText());
+            intent.putExtra("room", mAdapter.getItem(position));
             startActivity(intent);
         }
     }

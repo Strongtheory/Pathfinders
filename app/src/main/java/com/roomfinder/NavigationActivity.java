@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +24,8 @@ import java.util.List;
 public class NavigationActivity extends AppCompatActivity {
     private static final String TAG = "NavigationActivity";
     private Building building;
-    private String room;
-    private String entrance;
+    private Room room;
+    private Entrance entrance;
     private Directions directions;
 
     private ListView mlistView;
@@ -38,6 +39,15 @@ public class NavigationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Bundle extras = getIntent().getExtras();
+
+        //Java Garbage to individually cast Parcelable[] to Entrance[]
+        //because you cannot cast arrays
+        Parcelable[] entrancePs = extras.getParcelableArray("entrances");
+        Entrance[] entrances = new Entrance[entrancePs.length];
+        for (int i = 0; i < entrancePs.length; i++) {
+            entrances[i] = (Entrance) entrancePs[i];
+        }
+
         if (extras != null) {
             building = new Building(extras.getString("buildingName"),
                     extras.getString("address"),
@@ -45,9 +55,9 @@ public class NavigationActivity extends AppCompatActivity {
                     extras.getDouble("longitude"),
                     extras.getLong("buildingId"),
                     extras.getString("url"),
-                    extras.getStringArray("entrances"));
-            room = extras.getString("room");
-            entrance = extras.getString("entrance");
+                    entrances);
+            room = (Room) extras.getParcelable("room");
+            entrance = (Entrance) extras.getParcelable("entrance");
         } else {
             Log.e(TAG, "Extras == null");
         }
@@ -62,6 +72,9 @@ public class NavigationActivity extends AppCompatActivity {
                 protected void onPostExecute(String result) { onReceivedJSON(result);}
             };
             //task.execute("https://roomfinders.herokuapp.com/buildings/" + building.getId() + "/rooms");
+            Log.d(TAG, "Destination Building: " + building);
+            Log.d(TAG, "Building Entrance: " + entrance);
+            Log.d(TAG, "Destination Room: " + room);
         } else {
             Log.e(TAG, "Not connected to network");
         }
@@ -82,9 +95,9 @@ public class NavigationActivity extends AppCompatActivity {
                 stepTypes[i] = NavigationInstruction.values()[step.getInt("action")];
                 stepDistances[i] = step.getDouble("distance");
             }
-            directions = new Directions(json.getString("buildingEntrance"),
-                    json.getString("destinationBuilding"),
-                    json.getString("destinationRoom"),
+            directions = new Directions(new Entrance(json.getJSONObject("buildingEntrance")),
+                    new Building(json.getJSONObject("destinationBuilding")),
+                    new Room(json.getJSONObject("destinationRoom")),
                     json.getDouble("estimatedTravelTime"),
                     stepTypes,
                     stepDistances);

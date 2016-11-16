@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,7 @@ import java.util.List;
 public class EntranceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "EntranceListActivity";
     private Building building;
-    private String room;
+    private Room room;
     private ListView mlistView;
     private List<Entrance> entranceList;
     private FilterableItemAdapter<Entrance> mAdapter;
@@ -45,6 +46,15 @@ public class EntranceListActivity extends AppCompatActivity implements AdapterVi
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Bundle extras = getIntent().getExtras();
+
+        //Java Garbage to individually cast Parcelable[] to Entrance[]
+        //because you cannot cast arrays
+        Parcelable[] entrancePs = extras.getParcelableArray("entrances");
+        Entrance[] entrances = new Entrance[entrancePs.length];
+        for (int i = 0; i < entrancePs.length; i++) {
+            entrances[i] = (Entrance) entrancePs[i];
+        }
+
         if (extras != null) {
             building = new Building(extras.getString("buildingName"),
                     extras.getString("address"),
@@ -52,8 +62,8 @@ public class EntranceListActivity extends AppCompatActivity implements AdapterVi
                     extras.getDouble("longitude"),
                     extras.getLong("buildingId"),
                     extras.getString("url"),
-                    extras.getStringArray("entrances"));
-            room = extras.getString("room");
+                    entrances);
+            room = (Room) extras.getParcelable("room");
         } else {
             Log.e(TAG, "Extras == null");
         }
@@ -62,8 +72,8 @@ public class EntranceListActivity extends AppCompatActivity implements AdapterVi
 
         entranceList = new ArrayList<>();
         for (int i = 0; i < building.getEntrances().length; i++) {
-            String curr = building.getEntrances()[i];
-            entranceList.add(new Entrance(curr));
+            Entrance entrance = building.getEntrances()[i];
+            entranceList.add(entrance);
         }
         mAdapter = new FilterableItemAdapter<Entrance>(this, entranceList);
         mlistView.setAdapter(mAdapter);
@@ -94,7 +104,7 @@ public class EntranceListActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         TextView textView = (TextView) view.findViewById(R.id.itemName);
         Intent intent = new Intent(this, NavigationActivity.class);
         intent.putExtra("buildingId", building.getId());
@@ -105,26 +115,7 @@ public class EntranceListActivity extends AppCompatActivity implements AdapterVi
         intent.putExtra("url", building.getUrl());
         intent.putExtra("entrances", building.getEntrances());
         intent.putExtra("room", room);
-        intent.putExtra("entrance", textView.getText());
+        intent.putExtra("entrance", mAdapter.getItem(position));
         startActivity(intent);
-    }
-    private class Entrance implements FilterableItem {
-        private String name;
-        public Entrance(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String valueToFiler() {
-            return name;
-        }
     }
 }

@@ -1,5 +1,8 @@
 package com.roomfinder;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONObject;
 
 /**
@@ -7,41 +10,46 @@ import org.json.JSONObject;
  * Connor Reeder
  */
 
-public class Room implements FilterableItem {
-    private Long id;
-    private Long buildingId;
+public class Room implements Parcelable, FilterableItem {
+    private String node;
     private String roomNumber;
 
-    public Room (long id, long buildingId, String roomNumber) {
-        this.id = id;
-        this.buildingId = buildingId;
+    public Room (String node, String roomNumber) {
+        this.node = node;
         this.roomNumber = roomNumber;;
     }
 
     public Room (JSONObject jsonObject) {
         try {
-            this.id = jsonObject.getLong("id");
-            this.buildingId = jsonObject.getLong("buildingId");
+            this.node = jsonObject.getString("node");
             this.roomNumber = jsonObject.getString("roomNumber");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
-    public long getId() {
-        return id;
+    public Room (Parcel in) {
+        this.node = in.readString();
+        this.roomNumber = in.readString();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public static final Parcelable.Creator<Room> CREATOR
+            = new Parcelable.Creator<Room>() {
+        public Room createFromParcel(Parcel in) {
+            return new Room(in);
+        }
+
+        public Room[] newArray(int size) {
+            return new Room[size];
+        }
+    };
+
+    public String getNode() {
+        return node;
     }
 
-    public long getBuildingId() {
-        return buildingId;
-    }
-
-    public void setBuildingId(long buildingId) {
-        this.buildingId = buildingId;
+    public void setNode(String node) {
+        this.node = node;
     }
 
     public String getRoomNumber() {
@@ -55,5 +63,21 @@ public class Room implements FilterableItem {
     @Override
     public String valueToFiler() {
         return roomNumber;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(node);
+        out.writeString(roomNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "{node: " + node + ", roomNumber: " + roomNumber + "}";
     }
 }

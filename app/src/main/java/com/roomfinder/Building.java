@@ -22,9 +22,9 @@ public class Building implements FilterableItem {
     private String address;
     private long id;
     private String url;
-    private String[] entrances;
+    private Entrance[] entrances;
 
-    public Building(String name, String address, double latitude, double longitude, long id, String url, String[] entrances) {
+    public Building(String name, String address, double latitude, double longitude, long id, String url, Entrance[] entrances) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
@@ -43,13 +43,14 @@ public class Building implements FilterableItem {
             this.url = jsonObject.getString("imageURL");
             try {
                 JSONArray arr = jsonObject.getJSONArray("entrances");
-                this.entrances = new String[arr.length()];
+                this.entrances = new Entrance[arr.length()];
                 for (int i = 0; i < arr.length(); i++) {
-                    entrances[i] = arr.getJSONObject(i).getString("name");
+                    JSONObject entrObj = arr.getJSONObject(i);
+                    entrances[i] = new Entrance(entrObj.getString("node"), entrObj.getString("name"));
                 }
             } catch (JSONException ex) {
-                Log.d(TAG, "No entrances for building: " + name);
-                this.entrances = new String[0];
+                //Log.d(TAG, "No entrances for building: " + name);
+                this.entrances = new Entrance[0];
             }
 
         } catch (Exception ex) {
@@ -106,16 +107,21 @@ public class Building implements FilterableItem {
         this.url = url;
     }
 
-    public String[] getEntrances() {
+    public Entrance[] getEntrances() {
         return entrances;
     }
 
-    public void setEntrances(String[] entrances) {
+    public void setEntrances(Entrance[] entrances) {
         this.entrances = entrances;
     }
 
     @Override
     public String valueToFiler() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "{id: " + id + ", name: " + name + ", address: " + address + "}";
     }
 }
