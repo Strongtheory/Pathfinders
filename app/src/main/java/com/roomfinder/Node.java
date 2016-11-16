@@ -1,31 +1,55 @@
 package com.roomfinder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by connor on 11/16/16.
  */
 
 public class Node {
-    private long id;
+    private String id;
     private double latitude;
     private double longitude;
     private int floor;
-    private boolean entrance;
     private String[] rooms;
 
-    public Node(long id, double latitude, double longitude, int floor, boolean entrance, String[] rooms) {
+    public Node(String id, double latitude, double longitude, int floor, String[] rooms) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.floor = floor;
-        this.entrance = entrance;
         this.rooms = rooms;
     }
+    public Node (JSONObject jsonObject) {
+        try {
+            try {
+                JSONArray roomArr = jsonObject.getJSONArray("rooms");
+                String[] rooms = new String[roomArr.length()];
+                for (int j = 0; j < roomArr.length(); j++) {
+                    rooms[j] = roomArr.getString(j);
+                }
+                this.rooms = rooms;
+            } catch (JSONException ex) {
+                this.rooms = new String[0];
+            }
 
-    public long getId() {
+            this.id = jsonObject.getString("id");
+            this.latitude = jsonObject.getDouble("latitude");
+            this.longitude = jsonObject.getDouble("longitude");
+            this.floor = jsonObject.getInt("floor");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,14 +75,6 @@ public class Node {
 
     public void setFloor(int floor) {
         this.floor = floor;
-    }
-
-    public boolean isEntrance() {
-        return entrance;
-    }
-
-    public void setEntrance(boolean entrance) {
-        this.entrance = entrance;
     }
 
     public String[] getRooms() {

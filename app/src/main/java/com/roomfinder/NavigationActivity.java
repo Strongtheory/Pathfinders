@@ -5,20 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class NavigationActivity extends AppCompatActivity {
@@ -63,6 +57,9 @@ public class NavigationActivity extends AppCompatActivity {
         }
         Log.d(TAG, "Navigating in " + building.getName() + " to room: " + room + ", starting at: " + entrance);
 
+
+        mlistView = (ListView) findViewById(R.id.directions_list);
+
         //Check Network Connection
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -71,7 +68,11 @@ public class NavigationActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(String result) { onReceivedJSON(result);}
             };
-            //task.execute("https://roomfinders.herokuapp.com/buildings/" + building.getId() + "/rooms");
+            String url = "https://roomfinders.herokuapp.com/directions?building=" + building.getId()
+                    + "&entrance=" + entrance.getNode()
+                    + "&room=" + room.getNode();
+            task.execute(url);
+            Log.d(TAG, "Request: " + url);
             Log.d(TAG, "Destination Building: " + building);
             Log.d(TAG, "Building Entrance: " + entrance);
             Log.d(TAG, "Destination Room: " + room);
@@ -91,20 +92,8 @@ public class NavigationActivity extends AppCompatActivity {
             Step[] steps = new Step[stepsArr.length()];
             for (int i = 0; i < steps.length; i++) {
                 JSONObject step = stepsArr.getJSONObject(i);
-                JSONObject sN = step.getJSONObject("startingNode");
-                JSONObject eN = step.getJSONObject("endingNode");
-                JSONArray sRoomArr = sN.getJSONArray("rooms");
-                JSONArray eRoomArr = eN.getJSONArray("rooms");
-                String[] sRooms = new String[sRoomArr.length()];
-                for (int j = 0; j < sRoomArr.length(); j++) {
-                    sRooms[j] = sRoomArr.getString(j);
-                }
-                String[] eRooms = new String[eRoomArr.length()];
-                for (int j = 0; j < eRoomArr.length(); j++) {
-                    eRooms[j] = eRoomArr.getString(j);
-                }
-                Node startingNode = new Node(sN.getLong("id"),sN.getDouble("latitude"),sN.getDouble("longitude"),sN.getInt("floor"),sN.getBoolean("entrance"),sRooms);
-                Node endingNode = new Node(eN.getLong("id"), eN.getDouble("latitude"), eN.getDouble("longitude"),eN.getInt("floor"),sN.getBoolean("entrance"),eRooms);
+                Node startingNode = new Node(step.getJSONObject("startingNode"));
+                Node endingNode = new Node(step.getJSONObject("endingNode"));
                 steps[i] = new Step(NavigationInstruction.values()[step.getInt("action")],
                         step.getDouble("distance"),
                         startingNode,

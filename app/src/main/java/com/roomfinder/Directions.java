@@ -72,17 +72,21 @@ public class Directions {
         String[] instructions = new String[steps.length];
         for (int i = 0; i < steps.length; i++) {
             String command = "";
-            if (steps[i].getAction() == NavigationInstruction.TurnLeft)
-                command = "Turn Left in ";
-            else if (steps[i].getAction() == NavigationInstruction.TurnRight)
-                command = "Turn Right in";
-            else if (steps[i].getAction() == NavigationInstruction.ContinueStraight)
-                command = "Continue Straight for";
-            else if (steps[i].getAction()== NavigationInstruction.Upstairs)
-                command = "Go upstairs in";
-            else if (steps[i].getAction() == NavigationInstruction.Downstairs)
-                command = "Go Downstairs in";
-            instructions[i] = command + " " + steps[i].getDistance() + " feet";
+            if (steps[i].getAction() == NavigationInstruction.Arrived) {
+                instructions[i] = "You have arrived!";
+            }else {
+                if (steps[i].getAction() == NavigationInstruction.TurnLeft)
+                    command = "Turn Left in ";
+                else if (steps[i].getAction() == NavigationInstruction.TurnRight)
+                    command = "Turn Right in";
+                else if (steps[i].getAction() == NavigationInstruction.ContinueStraight)
+                    command = "Continue Straight for";
+                else if (steps[i].getAction()== NavigationInstruction.Upstairs)
+                    command = "Go upstairs in";
+                else if (steps[i].getAction() == NavigationInstruction.Downstairs)
+                    command = "Go Downstairs in";
+                instructions[i] = command + " " + steps[i].getDistance() + " feet";
+            }
         }
         return instructions;
     }

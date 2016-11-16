@@ -10,5 +10,6 @@ public enum NavigationInstruction {
     TurnRight,
     ContinueStraight,
     Upstairs,
-    Downstairs
+    Downstairs,
+    Arrived
 }
