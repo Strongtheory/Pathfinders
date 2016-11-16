@@ -87,24 +87,39 @@ public class NavigationActivity extends AppCompatActivity {
     public void onReceivedJSON(String result) {
         try {
             JSONObject json = new JSONObject(result);
-            JSONArray steps = json.getJSONArray("steps");
-            NavigationInstruction[] stepTypes = new NavigationInstruction[steps.length()];
-            double[] stepDistances = new double[steps.length()];
-            for (int i = 0; i < steps.length(); i++) {
-                JSONObject step = steps.getJSONObject(i);
-                stepTypes[i] = NavigationInstruction.values()[step.getInt("action")];
-                stepDistances[i] = step.getDouble("distance");
+            JSONArray stepsArr = json.getJSONArray("steps");
+            Step[] steps = new Step[stepsArr.length()];
+            for (int i = 0; i < steps.length; i++) {
+                JSONObject step = stepsArr.getJSONObject(i);
+                JSONObject sN = step.getJSONObject("startingNode");
+                JSONObject eN = step.getJSONObject("endingNode");
+                JSONArray sRoomArr = sN.getJSONArray("rooms");
+                JSONArray eRoomArr = eN.getJSONArray("rooms");
+                String[] sRooms = new String[sRoomArr.length()];
+                for (int j = 0; j < sRoomArr.length(); j++) {
+                    sRooms[j] = sRoomArr.getString(j);
+                }
+                String[] eRooms = new String[eRoomArr.length()];
+                for (int j = 0; j < eRoomArr.length(); j++) {
+                    eRooms[j] = eRoomArr.getString(j);
+                }
+                Node startingNode = new Node(sN.getLong("id"),sN.getDouble("latitude"),sN.getDouble("longitude"),sN.getInt("floor"),sN.getBoolean("entrance"),sRooms);
+                Node endingNode = new Node(eN.getLong("id"), eN.getDouble("latitude"), eN.getDouble("longitude"),eN.getInt("floor"),sN.getBoolean("entrance"),eRooms);
+                steps[i] = new Step(NavigationInstruction.values()[step.getInt("action")],
+                        step.getDouble("distance"),
+                        startingNode,
+                        endingNode);
             }
             directions = new Directions(new Entrance(json.getJSONObject("buildingEntrance")),
                     new Building(json.getJSONObject("destinationBuilding")),
                     new Room(json.getJSONObject("destinationRoom")),
                     json.getDouble("estimatedTravelTime"),
-                    stepTypes,
-                    stepDistances);
+                    json.getDouble("totalDistance"),
+                    steps);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        mAdapter = new ArrayAdapter<String>(this, R.layout.item_generic_list, R.id.itemName, directions.getSteps());
+        mAdapter = new ArrayAdapter<String>(this, R.layout.item_generic_list, R.id.itemName, directions.getInstructions());
         mlistView.setAdapter(mAdapter);
     }
 }

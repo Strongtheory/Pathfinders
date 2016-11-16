@@ -10,24 +10,18 @@ public class Directions {
     private Building destBuilding;
     private Room destRoom;
     private double estTravelTime;
-    private NavigationInstruction[] stepTypes;
-    private double[] stepDistances;
+    private double totalDistance;
+    private Step[] steps;
 
-    private final static String[] COMMANDS = {
-        "Turn Left",
-            "Turn Right",
-            "Continue Straight",
-            "Go Upstairs",
-            "Go Downstairs"
-    };
 
-    public Directions(Entrance buildingEntrance, Building destBuilding, Room destRoom, double estTravelTime, NavigationInstruction[] stepTypes, double[] stepDistances) {
+
+    public Directions(Entrance buildingEntrance, Building destBuilding, Room destRoom, double estTravelTime, double totalDistance, Step[] steps) {
         this.buildingEntrance = buildingEntrance;
         this.destBuilding = destBuilding;
         this.destRoom = destRoom;
         this.estTravelTime = estTravelTime;
-        this.stepTypes = stepTypes;
-        this.stepDistances = stepDistances;
+        this.totalDistance = totalDistance;
+        this.steps = steps;
     }
 
     public Entrance getBuildingEntrance() {
@@ -62,38 +56,34 @@ public class Directions {
         this.estTravelTime = estTravelTime;
     }
 
-    public NavigationInstruction[] getStepTypes() {
-        return stepTypes;
+    public double getTotalDistance() {
+        return totalDistance;
     }
 
-    public void setStepTypes(NavigationInstruction[] stepTypes) {
-        this.stepTypes = stepTypes;
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
     }
 
-    public double[] getStepDistances() {
-        return stepDistances;
+    public void setSteps(Step[] steps) {
+        this.steps = steps;
     }
 
-    public void setStepDistances(double[] stepDistances) {
-        this.stepDistances = stepDistances;
-    }
-
-    public String[] getSteps() {
-        String[] steps = new String[stepTypes.length];
+    public String[] getInstructions() {
+        String[] instructions = new String[steps.length];
         for (int i = 0; i < steps.length; i++) {
             String command = "";
-            if (stepTypes[i] == NavigationInstruction.TurnLeft)
+            if (steps[i].getAction() == NavigationInstruction.TurnLeft)
                 command = "Turn Left in ";
-            else if (stepTypes[i] == NavigationInstruction.TurnRight)
+            else if (steps[i].getAction() == NavigationInstruction.TurnRight)
                 command = "Turn Right in";
-            else if (stepTypes[i] == NavigationInstruction.ContinueStraight)
+            else if (steps[i].getAction() == NavigationInstruction.ContinueStraight)
                 command = "Continue Straight for";
-            else if (stepTypes[i] == NavigationInstruction.Upstairs)
+            else if (steps[i].getAction()== NavigationInstruction.Upstairs)
                 command = "Go upstairs in";
-            else if (stepTypes[i] == NavigationInstruction.Downstairs)
+            else if (steps[i].getAction() == NavigationInstruction.Downstairs)
                 command = "Go Downstairs in";
-            steps[i] = command + " " + stepTypes[i] + " feet";
+            instructions[i] = command + " " + steps[i].getDistance() + " feet";
         }
-        return steps;
+        return instructions;
     }
 }
